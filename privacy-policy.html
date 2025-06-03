@@ -1,0 +1,151 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyStack Privacy Policy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 2em;
+            color: #1a73e8;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #444;
+        }
+        p, li {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .last-updated {
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privacy Policy for CopyStack</h1>
+        <p class="last-updated">Last Updated: June 03, 2025</p>
+        <p>CopyStack ("we," "us," or "our"), developed by WGroup, operates the CopyStack mobile and web application ("app"), available on the Google Play Store, Apple App Store, and web browsers (Chrome). This Privacy Policy explains how we collect, use, disclose, and protect your information when you use our app.</p>
+
+        <h2>1. Information We Collect</h2>
+        <p>We may collect the following types of information:</p>
+        <ul>
+            <li><strong>Payment Information</strong>: When you subscribe to our premium plan, payment details are processed by RevenueCat and Google Play Billing or Apple’s In-App Purchase. We do not store or access your full payment information.</li>
+            <li><strong>Device Information</strong>: We collect device identifiers (e.g., device ID) and clipboard data (text, images, files) to enable clipboard synchronization and history features.</li>
+            <li><strong>File Uploads</strong>: Users can upload files (≤ 5 MB free, ≤ 10 MB premium) for cross-device access. These files are encrypted and stored temporarily.</li>
+            <li><strong>Authentication Data</strong>: Email address and password (hashed) for login and JWT session management.</li>
+            <li><strong>Usage Data</strong>: Analytics data (e.g., pasted items, sync latency) collected via Firebase Crashlytics and Amplitude to improve app performance and monitor KPIs.</li>
+        </ul>
+
+        <h2>2. How We Use Your Information</h2>
+        <ul>
+            <li>To process and manage your premium subscriptions via RevenueCat and Google Play Billing or Apple In-App Purchase.</li>
+            <li>To synchronize clipboard items, files, and history across your devices using our cloud infrastructure.</li>
+            <li>To provide and maintain the app’s functionality, including offline history and manual/realtime sync.</li>
+            <li>To analyze usage patterns and improve user experience based on aggregated, anonymized analytics data.</li>
+            <li>To comply with legal obligations and protect against fraud or security threats.</li>
+        </ul>
+
+        <h2>3. How We Share Your Information</h2>
+        <ul>
+            <li><strong>Payment Processors</strong>: Payment data is shared with RevenueCat, Google Play Billing, and Apple In-App Purchase for subscription management.</li>
+            <li><strong>Analytics Providers</strong>: Usage data is shared with Firebase Crashlytics and Amplitude for crash reporting and analytics, in aggregated and anonymized form.</li>
+            <li><strong>Cloud Infrastructure</strong>: Clipboard data and files are stored on our encrypted servers for sync purposes, accessible only to your authenticated devices.</li>
+            <li>We do not sell your personal information to third parties.</li>
+        </ul>
+
+        <h2>4. Your Rights</h2>
+        <ul>
+            <li>You can manage your subscription and data via the Google Play Store, Apple App Store, or app settings under "Device & Profile Management."</li>
+            <li>You may request access to, correction of, or deletion of your data by contacting us at wecanmakeit.vn@gmail.com.</li>
+            <li>If you are in the EU or UK, you have rights under GDPR, including the right to data portability and to withdraw consent.</li>
+            <li>If you are in California, you have rights under CCPA, including the right to opt-out of data sales (though we do not sell data).</li>
+        </ul>
+
+        <h2>5. Data Security</h2>
+        <p>We use end-to-end encryption (AES-256 via Hive) to protect your clipboard data, files, and authentication details. Payment information is secured by RevenueCat, Google Play Billing, and Apple In-App Purchase using their respective security standards. Data is stored on our servers with strict access controls and is only retained as long as necessary for the app’s functionality or legal requirements.</p>
+
+        <h2>6. Children’s Privacy</h2>
+        <p>CopyStack is not intended for users under 13. We do not knowingly collect data from children. If we learn of such collection, we will delete it promptly.</p>
+
+        <h2>7. International Data Transfers</h2>
+        <p>Your data may be transferred to and processed in [Your Country, e.g., USA] or other regions where our servers or third-party providers operate, ensuring compliance with applicable data protection laws.</p>
+
+        <h2>8. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy. Changes will be posted here with an updated date, and we may notify you via the app.</p>
+
+        <h2>9. Contact Us</h2>
+        <p>For questions or concerns, contact us at wecanmakeit.vn@gmail.com.</p>
+
+        <p>By using CopyStack, you agree to this Privacy Policy.</p>
+    </div>
+</body>
+</html>
